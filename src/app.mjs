@@ -1,12 +1,22 @@
 import express from "express";
+const app = express();
+const port = 3000;
 
-const app = express()
-const port = 3000
+//Default
+app.get("/", (req, res) => {
+res.send("API REST of self service machine !");
+});
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+//redirige /api/ vers localhost 3000
+app.get("/api/", (req, res) => {
+res.redirect(`http://localhost:${port}/`);
+});
 
+//prend la methode de products
+import { productsRouter } from "./routes/products.mjs";
+
+//dire que ca marche
+app.use("/api/products", productsRouter);
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+console.log(`Example app listening on port http://localhost:${port}`);
+});
