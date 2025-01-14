@@ -16,6 +16,8 @@ function procedurale (){
         };
 }
 
+// Solution utilisant le paradigme fonctionelle
+
 function fonctionnel (){
     const fonctionnelnumbers = numbers.map((x) => x * x);
     console.log(fonctionnelnumbers)
