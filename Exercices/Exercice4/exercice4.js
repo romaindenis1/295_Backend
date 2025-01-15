@@ -13,6 +13,7 @@ const animals = [
 // A VOUS DE COMPLETER ICI
 let threats = [];
 
+console.log("Methode procedurale");
 for (let index = 0; index <= animals.length - 1; index++) {
   if (animals[index].threat == 5) {
     console.log(animals[index]);
@@ -21,5 +22,10 @@ for (let index = 0; index <= animals.length - 1; index++) {
 
 // Solution utilisant le paradigme fonctionnel
 // A VOUS DE COMPLETER ICI
+
+//TODO FIX THIS
+console.log("Methode fonctionelle");
+const animalsfind = animals.find((animal) => animal.threat == 5);
+console.log(animalsfind);
 
 // returns object - {name: "monkey", threat: 5}
