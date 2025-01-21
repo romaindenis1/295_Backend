@@ -1,5 +1,5 @@
 import express from "express";
-import { sequelize } from "./db/sequelize.mjs";
+import { sequelize, initDb } from "./db/sequelize.mjs";
 
 const app = express();
 const port = 3000;
@@ -31,3 +31,5 @@ sequelize
     console.log("La connexion à la base de données a bien été établie")
   )
   .catch((error) => console.error("Impossible de se connecter à la DB"));
+
+initDb();
