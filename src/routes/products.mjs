@@ -39,5 +39,32 @@ productsRouter.post("/", (req, res) => {
   res.json(success(message, createdProduct));
 });
 
+productsRouter.delete("/:id", (req, res) => {
+  const productId = req.params.id;
+  let deletedProduct = getProduct(productId);
+  removeProduct(productId);
+  // Définir un message pour le consommateur de l'API REST
+  const message = `Le produit ${deletedProduct.name} a bien été supprimé !`;
+  // Retourner la réponse HTTP en json avec le msg et le produit créé
+  res.json(success(message, deletedProduct));
+});
+
+productsRouter.put("/:id", (req, res) => {
+  const productId = req.params.id;
+  const product = getProduct(productId);
+  // Mise à jour du produit
+  // A noter que la propriété 'created' n'étant pas modifiée, sera conservée telle quelle.
+  const updatedProduct = {
+    id: productId,
+    ...req.body,
+    created: product.created,
+  };
+  updateProduct(productId, updatedProduct);
+  // Définir un message pour l'utilisateur de l'API REST
+  const message = `Le produit ${updatedProduct.name} dont l'id vaut ${productId} a été mis à jour avec succès !`;
+  // Retourner la réponse HTTP en json avec le msg et le produit créé
+  res.json(success(message, updatedProduct));
+});
+
 //exporter
 export { productsRouter };
