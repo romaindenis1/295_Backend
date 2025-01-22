@@ -12,41 +12,38 @@ productsRouter.get("/", (req, res) => {
   res.json(success(message, products));
 });
 
-// Recupere une entree dependant sur l'id
-// ex: http://localhost:3000/api/products/3 donne les infos de ID 3
 productsRouter.get("/:id", (req, res) => {
-  const productId = req.params.id;
-  const product = products.find((product) => product.id == productId);
-  const message = `Le produit dont l'id vaut ${productId} a bien été récupéré.`;
-  res.json(success(message, product));
+  Product.findByPk(req.params.id).then((product) => {
+    const message = `Le produit dont l'id vaut ${product.id} a bien été récupéré.`;
+    res.json(success(message, product));
+  });
 });
 
 productsRouter.post("/", (req, res) => {
   // Création d'un nouvel id du produit
   // Dans les prochains versions, c'est MySQL qui gérera cela pour nous (identifiant auto_increment)
   const id = getUniqueId(products);
-
   // Création d'un objet avec les nouvelles informations du produits
   const createdProduct = { ...req.body, ...{ id: id, created: new Date() } };
-
   // Ajout du nouveau produit dans le tableau
   products.push(createdProduct);
-
   // Définir un message pour le consommateur de l'API REST
   const message = `Le produit ${createdProduct.name} a bien été créé !`;
-
   // Retourner la réponse HTTP en json avec le msg et le produit créé
   res.json(success(message, createdProduct));
 });
 
 productsRouter.delete("/:id", (req, res) => {
-  const productId = req.params.id;
-  let deletedProduct = getProduct(productId);
-  removeProduct(productId);
-  // Définir un message pour le consommateur de l'API REST
-  const message = `Le produit ${deletedProduct.name} a bien été supprimé !`;
-  // Retourner la réponse HTTP en json avec le msg et le produit créé
-  res.json(success(message, deletedProduct));
+  Product.findByPk(req.params.id).then((deletedProduct) => {
+    Product.destroy({
+      where: { id: deletedProduct.id },
+    }).then((_) => {
+      // Définir un message pour le consommateur de l'API REST
+      const message = `Le produit ${deletedProduct.name} a bien été supprimé !`;
+      // Retourner la réponse HTTP en json avec le msg et le produit créé
+      res.json(success(message, deletedProduct));
+    });
+  });
 });
 
 productsRouter.put("/:id", (req, res) => {
@@ -66,5 +63,4 @@ productsRouter.put("/:id", (req, res) => {
   res.json(success(message, updatedProduct));
 });
 
-//exporter
 export { productsRouter };

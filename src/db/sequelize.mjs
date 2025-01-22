@@ -35,4 +35,5 @@ const importProducts = () => {
     }).then((product) => console.log(product.toJSON()));
   });
 };
+
 export { sequelize, initDb, Product };
