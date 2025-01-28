@@ -25,6 +25,9 @@ app.listen(port, () => {
   console.log(`Example app listening on port http://localhost:${port}`);
 });
 
+import { loginRouter } from "./routes/login.mjs";
+app.use("/api/login", loginRouter);
+
 sequelize
   .authenticate()
   .then((_) =>
