@@ -34,7 +34,7 @@ const importUsers = () => {
     .hash("etml", 10) // temps pour hasher = du sel
     .then((hash) =>
       User.create({
-        username: "etml",
+        username: "admin",
         password: hash,
       })
     )

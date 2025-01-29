@@ -1,3 +1,3 @@
-const privateKey = "test";
+const privateKey = "meow";
 
 export { privateKey };

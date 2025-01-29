@@ -1,15 +1,14 @@
-//importe tout
 import express from "express";
 import { products } from "../db/mock-product.mjs";
 import { success } from "./helper.mjs";
 import { getUniqueId } from "./helper.mjs";
 import { Product } from "../db/sequelize.mjs";
 import { ValidationError, Op } from "sequelize";
+import { auth } from "../auth/auth.mjs";
+
 const productsRouter = express();
 
-//apelle fonction pour return en json
-
-productsRouter.get("/", (req, res) => {
+productsRouter.get("/", auth, (req, res) => {
   if (req.query.name) {
     if (req.query.name.length < 2) {
       const message = `Le terme de la recherche doit contenir au moins 2 caractères`;
@@ -40,13 +39,12 @@ productsRouter.get("/", (req, res) => {
     });
 });
 
-productsRouter.get("/:id", (req, res) => {
+productsRouter.get("/:id", auth, (req, res) => {
   Product.findByPk(req.params.id)
     .then((product) => {
       if (product === null) {
         const message =
           "Le produit demandé n'existe pas. Merci de réessayer avec un autre identifiant.";
-        // A noter ici le return pour interrompre l'exécution du code
         return res.status(404).json({ message });
       }
       const message = `Le produit dont l'id vaut ${product.id} a bien été récupéré.`;
@@ -59,12 +57,10 @@ productsRouter.get("/:id", (req, res) => {
     });
 });
 
-productsRouter.post("/", (req, res) => {
+productsRouter.post("/", auth, (req, res) => {
   Product.create(req.body)
     .then((createdProduct) => {
-      // Définir un message pour le consommateur de l'API REST
       const message = `Le produit ${createdProduct.name} a bien été créé !`;
-      // Retourner la réponse HTTP en json avec le msg et le produit créé
       res.json(success(message, createdProduct));
     })
     .catch((error) => {
@@ -73,21 +69,19 @@ productsRouter.post("/", (req, res) => {
       res.status(500).json({ message, data: error });
     });
 });
-productsRouter.delete("/:id", (req, res) => {
+
+productsRouter.delete("/:id", auth, (req, res) => {
   Product.findByPk(req.params.id)
     .then((deletedProduct) => {
       if (deletedProduct === null) {
         const message =
           "Le produit demandé n'existe pas. Merci de réessayer avec un autre identifiant.";
-        // A noter ici le return pour interrompre l'exécution du code
         return res.status(404).json({ message });
       }
       return Product.destroy({
         where: { id: deletedProduct.id },
       }).then((_) => {
-        // Définir un message pour le consommateur de l'API REST
         const message = `Le produit ${deletedProduct.name} a bien été supprimé !`;
-        // Retourner la réponse HTTP en json avec le msg et le produit créé
         res.json(success(message, deletedProduct));
       });
     })
@@ -98,21 +92,17 @@ productsRouter.delete("/:id", (req, res) => {
     });
 });
 
-productsRouter.put("/:id", (req, res) => {
+productsRouter.put("/:id", auth, (req, res) => {
   const productId = req.params.id;
   Product.update(req.body, { where: { id: productId } })
     .then((_) => {
-      // return par ce que
       return Product.findByPk(productId).then((updatedProduct) => {
         if (updatedProduct === null) {
           const message =
             "Le produit demandé n'existe pas. Merci de réessayer avec un autre identifiant.";
-          // A noter ici le return pour interrompre l'exécution du code
           return res.status(404).json({ message });
         }
-        // Définir un message pour l'utilisateur de l'API REST
-        const message = `Le produit ${updatedProduct.name} dont l'id vaut ${updatedProduct.id} a été mis à jour avec sucess`;
-        // Retourner la réponse HTTP en json avec le msg et le produit créé
+        const message = `Le produit ${updatedProduct.name} dont l'id vaut ${updatedProduct.id} a été mis à jour avec succès`;
         res.json(success(message, updatedProduct));
       });
     })
