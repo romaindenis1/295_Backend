@@ -1,5 +1,12 @@
 import express from "express";
 import { sequelize, initDb } from "./db/sequelize.mjs";
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./swagger.mjs";
+//prend la methode de products
+import { productsRouter } from "./routes/products.mjs";
+
+// Route pour accéder à la documentation Swagger
+//const specs = swaggerJsdoc(options);
 
 const app = express();
 const port = 3000;
@@ -16,8 +23,11 @@ app.get("/api/", (req, res) => {
   res.redirect(`http://localhost:${port}/`);
 });
 
-//prend la methode de products
-import { productsRouter } from "./routes/products.mjs";
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, { explorer: true })
+);
 
 //dire que ca marche
 app.use("/api/products", productsRouter);
