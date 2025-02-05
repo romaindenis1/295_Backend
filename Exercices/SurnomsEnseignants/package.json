@@ -1,0 +1,18 @@
+{
+  "name": "surnomenseignants",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.mjs",
+  "scripts": {
+    "start": "nodemon app.mjs"
+  },
+  "author": "Romain Denis",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
